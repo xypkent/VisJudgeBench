@@ -3,8 +3,10 @@
 **VisJudgeBench: Aesthetics and Quality Assessment of Visualizations**
 
 [![arXiv](https://img.shields.io/badge/arXiv-2510.22373-b31b1b.svg)](https://arxiv.org/abs/2510.22373)
+[![Model](https://img.shields.io/badge/🤗_HuggingFace-VisJudge_7B-ffc107.svg)](https://huggingface.co/xypkent/visjudge-7b)
 
-📄 **Paper**: [https://arxiv.org/abs/2510.22373](https://arxiv.org/abs/2510.22373)
+📄 **Paper**: [https://arxiv.org/abs/2510.22373](https://arxiv.org/abs/2510.22373)  
+🤖 **Model**: [https://huggingface.co/xypkent/visjudge-7b](https://huggingface.co/xypkent/visjudge-7b)
 
 ## 🎯 About VisJudgeBench
 
@@ -74,9 +76,7 @@ Our benchmark contains **3,090 expert-annotated samples** collected from real-wo
 
 ## 🏆 Benchmark Results
 
-We systematically evaluate multiple state-of-the-art multimodal large language models (MLLMs) on VisJudgeBench to assess their visualization quality assessment capabilities. 
-
-**About VisJudge:** To address the significant gaps between general MLLMs and human expert judgment, we developed **VisJudge**, a specialized model fine-tuned on our benchmark data using the GRPO (Group Relative Policy Optimization) method. VisJudge is based on Qwen2.5-VL-7B-Instruct and trained specifically for visualization quality assessment across the Fidelity-Expressiveness-Aesthetics dimensions.
+We systematically evaluate multiple state-of-the-art multimodal large language models (MLLMs) on VisJudgeBench to assess their visualization quality assessment capabilities.
 
 ### 🤖 Can MLLMs Assess Visualization Quality and Aesthetics Like Humans?
 
@@ -205,6 +205,39 @@ The dataset is stored in JSON format (`VisJudgeBench.json`), where each entry co
   },
   "prompt": "..."
 }
+```
+
+## 🤖 VisJudge Model
+
+To address the significant gaps between general MLLMs and human expert judgment in visualization quality assessment, we developed **VisJudge** — a specialized model fine-tuned on our benchmark data using the GRPO (Group Relative Policy Optimization) method. VisJudge is based on Qwen2.5-VL-7B-Instruct and trained specifically for visualization quality assessment across the **Fidelity-Expressiveness-Aesthetics** dimensions.
+
+🤗 **Model Repository:** [https://huggingface.co/xypkent/visjudge-7b](https://huggingface.co/xypkent/visjudge-7b)
+
+### Performance Highlights
+
+- 🎯 **19.8% MAE improvement** over GPT-5 (0.442 vs 0.551)
+- 📈 **58.7% higher correlation** with human experts compared to GPT-5 (0.681 vs 0.429)
+- 🏅 **Outperforms all commercial MLLMs** across all metrics on visualization assessment tasks
+
+### Quick Start
+
+```python
+from transformers import Qwen2VLForConditionalGeneration
+from peft import PeftModel
+import torch
+
+# Load base model and LoRA weights
+base_model = Qwen2VLForConditionalGeneration.from_pretrained(
+    "Qwen/Qwen2.5-VL-7B-Instruct",
+    torch_dtype=torch.bfloat16,
+    device_map="auto"
+)
+
+model = PeftModel.from_pretrained(base_model, "xypkent/visjudge-7b")
+model.eval()
+
+# Use the model for visualization quality assessment
+# See the model repository for detailed usage examples
 ```
 
 ## 📝 Citation
